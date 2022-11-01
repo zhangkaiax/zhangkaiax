@@ -1,0 +1,18 @@
+{
+  "name": "react-project",
+  "version": "1.0.0",
+  "description": "npm i react react-dom react包是核心，提供穿创建元素、组件等功能 react-domreact-domb包提供DOM相关功能等",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "html-webpack-plugin": "^5.5.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0"
+  }
+}
