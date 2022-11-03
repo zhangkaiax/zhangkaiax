@@ -202,4 +202,156 @@ const list = () => (
     1. 父组件将值作为子组件的属性传递给子组件
     2. 子组件通过props接收父组件的传值
 - 子组件 to 父组件
+    利用回调函数，父组件提供回调，子组件调用，将要传递的数据作为回调函数的参数
+        class Parent extends React.component{
+            getChildMsg = (data) => {
+                console.log('接收到子组件的值：', data)
+            }
+            render() {
+                return (
+                    <Child getMsg={this.getChildMsg}/>
+                )
+            }
+        }
+        class Child extends React.component {
+            state = {
+                msg: '我是子组件'
+            }
+            handleClick = () => {
+                this.props.getMsg(this.state.msg)
+            }
+            render() {
+                return (
+                    <button onClick={this.handleClick}></button>
+                )
+            }
+        }
 - 兄弟组件
+    将共享状态提升到最近的公共父组件中，由公共父组件管理这个状态。
+    公共父组件的指责：
+        1. 提供共享状态
+        2. 提供操作共享状态的方法
+    要通讯的子组件只需通过props接收状态或者操作状态的方法
+
+    class Counter extends React.component{
+        // 提供共享状态
+        state={
+            count: 0
+        }
+        // 提供修改状态的方法
+        increment = () => {
+            this.setState({
+                count: this.state.count ++
+            })
+            
+        }
+        render() {
+            return (
+                <div>
+                    <Child1 count={this.state.count}/>
+                    <Child2 onIncrement={this.increment}/>
+                </div>
+            )
+        }
+    }
+
+    const Child1 = (props) => {
+        return <h1>计数器：{props.count}</h1>
+    }
+
+    const Child2 = (props) => {
+        return <button onClick={() => props.onIncrement()}>+1</button>
+    }
+
+- 嵌套组件传参（跨层级）：context
+    1. 调用React.createContext()创建Provider（提供参数）和Consumer(消费数据)两个组件
+        const {Provider, Consumer} = React.createContext()
+    2. 使用Provider组件作为父节点
+        <Provider>
+            <div className="App">
+                <Child />
+            </div>
+        </Provider>
+    3. 设置value属性，表示要传递的数据
+        <Provider value="XXX"></Provider>
+    4. 使用Consumer组件接收数据
+        <Consumer>
+            {data => <span>接收到的数据：{data}</span>}
+        </Consumer>
+
+### 深入了解props
+1. children属性：
+    表示组件标签的子节点，当组件标签有子节点时，props就会有此属性。（这里感觉像是vue插槽里的内容）
+    children的值可以是任意值。
+    function Hello(props) {
+        return (
+            <div>
+                组件的子节点：{props.children}
+            </div>
+        )
+    }
+    
+    <Hello>我是子节点</Hello>
+
+2. props校验：允许在创建组件的时候就指定props的类型、格式等
+    function App (props) {
+        return (
+            <h1>{props.color}</h1>
+        )
+    }
+    App.propTypes = {color: PropTypes.array} // 指定数组类型
+    2.1 使用步骤：
+        2.1.1 安装prop-types（yarn add / npm i prop-types）
+        2.1.2 导入prop-types包： import PropTypes from 'prop-types'
+    2.2 约束规则：具体见ProtoTypes官网
+        2.2.1 常见类型：array bool func number object string React元素类型（element）
+        2.2.2 必选：requiredFunc: PropTypes.func.required
+        2.2.3 特定结构的对象： 
+            optionalObjectWithShape: PropTypes.shape({
+                color: PropTypes.string,
+                fontSize: PropTypes.number
+            })
+3. props的默认值
+    场景：分页组件-每页显示条数
+        function App (props) {
+            return (
+                <div>{props.pageSize}</div>
+            )
+        }
+        App.defaultProps = {
+            pageSize: 10
+        }
+
+### 组件的生命周期
+    * 只有类组件才有生命周期
+    1. 创建时：执行顺序： constructor、render、componentDidMount
+    - constructor：一般用来初始化state和为事件处理程序绑定this
+    - render：每次组件渲染都会触发
+        render() {
+            ** 注意：不能在render里调用setState 因为会造成死循环
+            this.setState({AAA: 'aaa'})
+            return(
+                <div></div>
+            )
+        }
+    - componentDidMount： 组件挂载（完成DOM渲染）后,一般用来发送请求和进行DOM操作
+
+    2. 更新时：执行顺序render、componentDidUpdate
+    触发更新的操作：new props、setState()、forceUpdate()
+    触发时机：组件更新（完成DOM渲染）后
+    作用：1.发送网络请求 2.DOM操作
+    ** 注意：如果要setState() 必须放在if条件中,否则会死循环
+    componentDidUpdate(prevProps) {
+        console.log("上一次的props：", prevProps, '当前的props：', this.props)
+        if (prevProps.xxx !== this.props.xxx) {
+            this.setState()
+        }
+    }
+
+    3. 卸载时：组件从页面消失 componentWillUnmount
+    触发时机：组件卸载
+    作用：执行清理操作（比如：清理定时器）
+
+    * 不常用的钩子函数：componentWillMount(已废弃)、componentWillReceiveProps、componentWillUpdate、shouldComponentUpdate、getDerivedStateFromProps(新，在constructor之后,render之前执行)、getSnapshotBeforeUpdate(新,在render之后执行) *
+
+
