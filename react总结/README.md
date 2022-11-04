@@ -352,6 +352,61 @@ const list = () => (
     触发时机：组件卸载
     作用：执行清理操作（比如：清理定时器）
 
-    * 不常用的钩子函数：componentWillMount(已废弃)、componentWillReceiveProps、componentWillUpdate、shouldComponentUpdate、getDerivedStateFromProps(新，在constructor之后,render之前执行)、getSnapshotBeforeUpdate(新,在render之后执行) *
+    * 不常用的钩子函数：componentWillMount(已废弃)、componentWillReceiveProps、componentWillUpdate、getDerivedStateFromProps(新，在constructor之后,render之前执行)、getSnapshotBeforeUpdate(新,在render之后执行) *
 
+    * shouldComponentUpdate: 更新阶段的钩子函数，组件渲染（render）前执行，避免不必要的更新
+        shouldComponentUpdate(nextProps, nextState)
 
+### render-props模式 
+通过给props里增加方法属性来实现子组件的复用
+### 高阶组件（HOC）
+高阶组件是一个函数，接收要包装的组件，通过在函数内部创建一个类组件，在这个类组件中提供复用的状态逻辑代码，通过prop将复用的状态给被包装组件的方式，返回增强后的组件。
+目的：组件复用
+手段：采用包装（装饰）模式
+
+const EnhanceComponent = withHOC(WrappedComponent)
+
+<!-- 高阶组件内部创建的类组件 -->
+function withMouse(WrappedComponent) {
+    class Mouse extends React.component {
+        state = {
+            x: 0,
+            y: 0
+        }
+        handleMouseMove = (e) => {
+            this.setState({
+                x: e.clientX,
+                y: e.clientY
+            })
+        }
+        compomnentDidMount() {
+            window.addEventListener('mouseMove', this.handleMouseMove)
+        }
+        componentWillUnmount() {
+            window.removeEventListener('mouseMove', this.handleMouseMove)
+        }
+        render() {
+            return (
+                <WrappedComponent {...this.state} />
+            )
+        }
+    }
+    return Mouse
+}
+
+> 高阶函数的使用步骤
+  1. 创建一个函数，名称约定以with开头
+  2. 指定函数参数，参数名称以大写字母开头（作为要渲染的组件）
+> 设置displayName
+  why? 因为默认情况下，React使用组件名称作为displayName，而通过高阶组件得到的组件名称相同
+  displayName的作用：用于设置调试信息（React Developer Tools信息）
+> 设置方式
+        Mouse.displayName = `WithMouse${getDisplayName(WrappedComponent)}`
+        function getDisplayName(WrappedComponent) {
+            return WrappedComponent.displayName || WrappedComponent.name || 'Component'
+        }
+> 传递props
+  问题：props丢失
+  原因：高阶组件没有往下传递props
+  解决方法：渲染WrappedComponent时，将state和this.props一起传递给组件
+  <WrappedComponent {...this.state} {...this.props} />
