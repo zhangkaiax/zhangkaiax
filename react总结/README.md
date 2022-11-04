@@ -24,41 +24,41 @@ ReactDOM.render(title, document.getElementById('root'))
 - yarn create react-app my-app
 
 ### jsx 语法
-const ele = (
-    <div>hello react</div>
-)
+        const ele = (
+            <div>hello react</div>
+        )
 #### 条件渲染 
-const loading = () => {
-    if (isLoading) {
-        return (<div>加载中...</div>)
-    }
-    return (<div>加载好了</div>)
-}
+        const loading = () => {
+            if (isLoading) {
+                return (<div>加载中...</div>)
+            }
+            return (<div>加载好了</div>)
+        }
 
-const loadingDOM = (
-    <div>{ loading() }</div>
-)
+        const loadingDOM = (
+            <div>{ loading() }</div>
+        )
 #### 列表渲染
 - 如果要渲染一组数据，应该使用数组的map()方法
-const lists = [
-    {id: 1, name: '张三'},
-    {id: 2, name: '李四'},
-    {id: 3, name: '王五'}
-]
+        const lists = [
+            {id: 1, name: '张三'},
+            {id: 2, name: '李四'},
+            {id: 3, name: '王五'}
+        ]
 
-const list = () => (
-    <ul>
-     { lists.map(item => <li>{item.name}</li>)}
-    </ul>
-)
+        const list = () => (
+            <ul>
+            { lists.map(item => <li>{item.name}</li>)}
+            </ul>
+        )
 
 
 #### 行内样式
 1. sytle 方式
-<div style={{color: 'red', backgroundColor: 'yellow'}}></div>
+        <div style={{color: 'red', backgroundColor: 'yellow'}}></div>
 
 2. class 方式
-<div className="class_1"></div>
+        <div className="class_1"></div>
 
 
 ### react 组件
@@ -68,11 +68,11 @@ const list = () => (
   - 函数组件(无状态组件)：只负责数据的展示
     1. 函数名称必须以大写字母开头。如果小写开头，react会认为是一个普通的标签，大写开头会当成组件处理
     2. 函数必须有返回值
-    fuction Hello() {
-        return (
-            <div>函数组件</div>
-        )
-    }
+        fuction Hello() {
+            return (
+                <div>函数组件</div>
+            )
+        }
 
     const Hello = () => <div>函数组件</div>
 
@@ -81,14 +81,14 @@ const list = () => (
     2. 类继承React.Component
     3. 类组件必须提供render方法
     4. render方法必须有返回值
-    class Hello extends React.Component{
-      render(
-        return (
-            <div>类组件</div>
+        class Hello extends React.Component{
+        render(
+            return (
+                <div>类组件</div>
+            )
         )
-      )
-    }
-    ReactDOM.render(<hello />, root)
+        }
+        ReactDOM.render(<hello />, root)
 
 #### 事件绑定
     1. 在类组建中通过this.function调用
@@ -156,13 +156,13 @@ const list = () => (
 ### 表单处理
 1. 受控组件：其值受到React控制的表单元素
     HTML中的表单元素是可以输入的，也就有自己的可变状态，而React中可变状态通常保存在state中，并且只能通过setState方法来修改；所以，React将state中的值与表单元素的值value绑定在一起，由state的值来控制表单元素的值
-    state = {
-        text: ''
-    }
-    handleChange = (e) => {
-        this.setState({text: e.target.value})
-    }
-    <input type="text" value={this.state.text onChange={this.handleChange}} />
+        state = {
+            text: ''
+        }
+        handleChange = (e) => {
+            this.setState({text: e.target.value})
+        }
+        <input type="text" value={this.state.text onChange={this.handleChange}} />
 2. 非受控组件： 借助ref，使用原生DOM方式来获取表单值
         constructor() {
             super()
@@ -179,22 +179,22 @@ const list = () => (
 <Hello name="jack" age={19}></Hello>
 
 1. 函数式组件
-    function Hello(props) {
-        return (
-            <div>接收到的数据：{props.name}</div>
-        )
-    }
-2. 类组件  注意：使用类组件时，如果写了构造函数，应该把props传递给super，否则无法在构造函数中取到props
-    class Hello extends React.component {
-        constructor(props) {
-            super(props) // 注意事项描述的就是这里
-        }
-        render() { // render中是可以拿到props的
-            return(
-                <div>接收到的数据：{this.props.name}</div>
+        function Hello(props) {
+            return (
+                <div>接收到的数据：{props.name}</div>
             )
         }
-    }
+2. 类组件  注意：使用类组件时，如果写了构造函数，应该把props传递给super，否则无法在构造函数中取到props
+        class Hello extends React.component {
+            constructor(props) {
+                super(props) // 注意事项描述的就是这里
+            }
+            render() { // render中是可以拿到props的
+                return(
+                    <div>接收到的数据：{this.props.name}</div>
+                )
+            }
+        }
 
 #### 组件通讯的三种方式
 
@@ -233,35 +233,35 @@ const list = () => (
         2. 提供操作共享状态的方法
     要通讯的子组件只需通过props接收状态或者操作状态的方法
 
-    class Counter extends React.component{
-        // 提供共享状态
-        state={
-            count: 0
-        }
-        // 提供修改状态的方法
-        increment = () => {
-            this.setState({
-                count: this.state.count ++
-            })
-            
-        }
-        render() {
-            return (
-                <div>
-                    <Child1 count={this.state.count}/>
-                    <Child2 onIncrement={this.increment}/>
-                </div>
-            )
-        }
+        class Counter extends React.component{
+            // 提供共享状态
+            state={
+                count: 0
+            }
+            // 提供修改状态的方法
+            increment = () => {
+                this.setState({
+                    count: this.state.count ++
+                })
+                
+            }
+            render() {
+                return (
+                    <div>
+                        <Child1 count={this.state.count}/>
+                        <Child2 onIncrement={this.increment}/>
+                    </div>
+                )
+            }
     }
 
-    const Child1 = (props) => {
-        return <h1>计数器：{props.count}</h1>
-    }
+        const Child1 = (props) => {
+            return <h1>计数器：{props.count}</h1>
+        }
 
-    const Child2 = (props) => {
-        return <button onClick={() => props.onIncrement()}>+1</button>
-    }
+        const Child2 = (props) => {
+            return <button onClick={() => props.onIncrement()}>+1</button>
+        }
 
 - 嵌套组件传参（跨层级）：context
     1. 调用React.createContext()创建Provider（提供参数）和Consumer(消费数据)两个组件
@@ -283,23 +283,23 @@ const list = () => (
 1. children属性：
     表示组件标签的子节点，当组件标签有子节点时，props就会有此属性。（这里感觉像是vue插槽里的内容）
     children的值可以是任意值。
-    function Hello(props) {
-        return (
-            <div>
-                组件的子节点：{props.children}
-            </div>
-        )
-    }
+        function Hello(props) {
+            return (
+                <div>
+                    组件的子节点：{props.children}
+                </div>
+            )
+        }
     
     <Hello>我是子节点</Hello>
 
 2. props校验：允许在创建组件的时候就指定props的类型、格式等
-    function App (props) {
-        return (
-            <h1>{props.color}</h1>
-        )
-    }
-    App.propTypes = {color: PropTypes.array} // 指定数组类型
+        function App (props) {
+            return (
+                <h1>{props.color}</h1>
+            )
+        }
+        App.propTypes = {color: PropTypes.array} // 指定数组类型
     2.1 使用步骤：
         2.1.1 安装prop-types（yarn add / npm i prop-types）
         2.1.2 导入prop-types包： import PropTypes from 'prop-types'
@@ -356,6 +356,9 @@ const list = () => (
 
     * shouldComponentUpdate: 更新阶段的钩子函数，组件渲染（render）前执行，避免不必要的更新
         shouldComponentUpdate(nextProps, nextState)
+            nextProps: 最新的props
+            nextState: 最新的state
+        一般用nextProps/nextState中的值去和this.props/this.state来判断是否需要渲染
 
 ### render-props模式 
 通过给props里增加方法属性来实现子组件的复用
@@ -364,35 +367,35 @@ const list = () => (
 目的：组件复用
 手段：采用包装（装饰）模式
 
-const EnhanceComponent = withHOC(WrappedComponent)
+        const EnhanceComponent = withHOC(WrappedComponent)
 
-<!-- 高阶组件内部创建的类组件 -->
-function withMouse(WrappedComponent) {
-    class Mouse extends React.component {
-        state = {
-            x: 0,
-            y: 0
+        <!-- 高阶组件内部创建的类组件 -->
+        function withMouse(WrappedComponent) {
+            class Mouse extends React.component {
+                state = {
+                    x: 0,
+                    y: 0
+                }
+                handleMouseMove = (e) => {
+                    this.setState({
+                        x: e.clientX,
+                        y: e.clientY
+                    })
+                }
+                compomnentDidMount() {
+                    window.addEventListener('mouseMove', this.handleMouseMove)
+                }
+                componentWillUnmount() {
+                    window.removeEventListener('mouseMove', this.handleMouseMove)
+                }
+                render() {
+                    return (
+                        <WrappedComponent {...this.state} />
+                    )
+                }
+            }
+            return Mouse
         }
-        handleMouseMove = (e) => {
-            this.setState({
-                x: e.clientX,
-                y: e.clientY
-            })
-        }
-        compomnentDidMount() {
-            window.addEventListener('mouseMove', this.handleMouseMove)
-        }
-        componentWillUnmount() {
-            window.removeEventListener('mouseMove', this.handleMouseMove)
-        }
-        render() {
-            return (
-                <WrappedComponent {...this.state} />
-            )
-        }
-    }
-    return Mouse
-}
 
 > 高阶函数的使用步骤
   1. 创建一个函数，名称约定以with开头
