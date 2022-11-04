@@ -253,7 +253,7 @@ ReactDOM.render(title, document.getElementById('root'))
                     </div>
                 )
             }
-    }
+        }
 
         const Child1 = (props) => {
             return <h1>计数器：{props.count}</h1>
@@ -294,6 +294,7 @@ ReactDOM.render(title, document.getElementById('root'))
     <Hello>我是子节点</Hello>
 
 2. props校验：允许在创建组件的时候就指定props的类型、格式等
+
         function App (props) {
             return (
                 <h1>{props.color}</h1>
@@ -313,6 +314,7 @@ ReactDOM.render(title, document.getElementById('root'))
             })
 3. props的默认值
     场景：分页组件-每页显示条数
+
         function App (props) {
             return (
                 <div>{props.pageSize}</div>
@@ -327,6 +329,7 @@ ReactDOM.render(title, document.getElementById('root'))
     1. 创建时：执行顺序： constructor、render、componentDidMount
     - constructor：一般用来初始化state和为事件处理程序绑定this
     - render：每次组件渲染都会触发
+
         render() {
             ** 注意：不能在render里调用setState 因为会造成死循环
             this.setState({AAA: 'aaa'})
@@ -341,12 +344,13 @@ ReactDOM.render(title, document.getElementById('root'))
     触发时机：组件更新（完成DOM渲染）后
     作用：1.发送网络请求 2.DOM操作
     ** 注意：如果要setState() 必须放在if条件中,否则会死循环
-    componentDidUpdate(prevProps) {
-        console.log("上一次的props：", prevProps, '当前的props：', this.props)
-        if (prevProps.xxx !== this.props.xxx) {
-            this.setState()
+
+        componentDidUpdate(prevProps) {
+            console.log("上一次的props：", prevProps, '当前的props：', this.props)
+            if (prevProps.xxx !== this.props.xxx) {
+                this.setState()
+            }
         }
-    }
 
     3. 卸载时：组件从页面消失 componentWillUnmount
     触发时机：组件卸载
@@ -358,7 +362,7 @@ ReactDOM.render(title, document.getElementById('root'))
         shouldComponentUpdate(nextProps, nextState)
             nextProps: 最新的props
             nextState: 最新的state
-        一般用nextProps/nextState中的值去和this.props/this.state来判断是否需要渲染
+        一般用nextProps/nextState中的值去和this.props（发生在子组件判断）/this.state（父组件）来判断是否需要渲染
 
 ### render-props模式 
 通过给props里增加方法属性来实现子组件的复用
@@ -404,6 +408,7 @@ ReactDOM.render(title, document.getElementById('root'))
   why? 因为默认情况下，React使用组件名称作为displayName，而通过高阶组件得到的组件名称相同
   displayName的作用：用于设置调试信息（React Developer Tools信息）
 > 设置方式
+
         Mouse.displayName = `WithMouse${getDisplayName(WrappedComponent)}`
         function getDisplayName(WrappedComponent) {
             return WrappedComponent.displayName || WrappedComponent.name || 'Component'
@@ -413,3 +418,25 @@ ReactDOM.render(title, document.getElementById('root'))
   原因：高阶组件没有往下传递props
   解决方法：渲染WrappedComponent时，将state和this.props一起传递给组件
   <WrappedComponent {...this.state} {...this.props} />
+
+### react路由
+    使用步骤：
+        1. yarn add react-router-dom
+        2. 导入路由的三个核心组件： Router/Route/Link:
+            import {BrowserRouter as Router, Route, Link} from 'react-router-dom'
+        3. 使用Router组件包裹整个应用
+            <Router>
+                <div className='app'>
+                    // ...
+                </div>
+            </Router>
+        4. 使用Link组件作为导航菜单（路由入口）
+            <Link to="/first">页面-</Link>
+        5. 使用Route组件配置路由规则和要展示的组件（路由出口） 
+            const First = () => <p>页面一的内容</p>
+            <Router>
+                <div className='app'>
+                    <Link to="/first">页面-</Link>
+                    <Route path="/first" component={First}></Route>
+                </div>
+            </Router>
