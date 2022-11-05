@@ -156,6 +156,7 @@ ReactDOM.render(title, document.getElementById('root'))
 ### 表单处理
 1. 受控组件：其值受到React控制的表单元素
     HTML中的表单元素是可以输入的，也就有自己的可变状态，而React中可变状态通常保存在state中，并且只能通过setState方法来修改；所以，React将state中的值与表单元素的值value绑定在一起，由state的值来控制表单元素的值
+    
         state = {
             text: ''
         }
@@ -164,6 +165,7 @@ ReactDOM.render(title, document.getElementById('root'))
         }
         <input type="text" value={this.state.text onChange={this.handleChange}} />
 2. 非受控组件： 借助ref，使用原生DOM方式来获取表单值
+
         constructor() {
             super()
             this.textRef = React.createRef()
@@ -283,6 +285,7 @@ ReactDOM.render(title, document.getElementById('root'))
 1. children属性：
     表示组件标签的子节点，当组件标签有子节点时，props就会有此属性。（这里感觉像是vue插槽里的内容）
     children的值可以是任意值。
+
         function Hello(props) {
             return (
                 <div>
@@ -308,6 +311,7 @@ ReactDOM.render(title, document.getElementById('root'))
         2.2.1 常见类型：array bool func number object string React元素类型（element）
         2.2.2 必选：requiredFunc: PropTypes.func.required
         2.2.3 特定结构的对象： 
+
             optionalObjectWithShape: PropTypes.shape({
                 color: PropTypes.string,
                 fontSize: PropTypes.number
@@ -417,22 +421,28 @@ ReactDOM.render(title, document.getElementById('root'))
   问题：props丢失
   原因：高阶组件没有往下传递props
   解决方法：渲染WrappedComponent时，将state和this.props一起传递给组件
+
   <WrappedComponent {...this.state} {...this.props} />
 
 ### react路由
     使用步骤：
         1. yarn add react-router-dom
         2. 导入路由的三个核心组件： Router/Route/Link:
+
             import {BrowserRouter as Router, Route, Link} from 'react-router-dom'
-        3. 使用Router组件包裹整个应用
+        3. 使用Router组件包裹整个应用.
+            两种Router:HashRouter、BrowserRouter。HashRouter在端口号后/#/
+
             <Router>
                 <div className='app'>
                     // ...
                 </div>
             </Router>
         4. 使用Link组件作为导航菜单（路由入口）
+
             <Link to="/first">页面-</Link>
         5. 使用Route组件配置路由规则和要展示的组件（路由出口） 
+
             const First = () => <p>页面一的内容</p>
             <Router>
                 <div className='app'>
@@ -440,3 +450,27 @@ ReactDOM.render(title, document.getElementById('root'))
                     <Route path="/first" component={First}></Route>
                 </div>
             </Router>
+#### 编程式导航
+
+        class Logiin extends React.component {
+            handleLogin = () => {
+                this.props.history.push('/home')
+            }
+            render() {
+                return(
+                    // ...
+                )
+            }
+        }
+#### 默认路由
+
+        <Route path="/" component={home} />
+#### 模糊匹配模式
+
+模糊匹配模式下：
+    1. '/' 会被所有的pathName匹配上
+    2. '/first'也会被'/first/a'匹配上
+
+#### 精确匹配模式
+目的：为了解决一些页面不希望模糊匹配
+解决方法：给Route组件添加exact属性，让其变为精确匹配模式
