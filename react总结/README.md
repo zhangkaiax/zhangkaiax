@@ -479,3 +479,131 @@ ReactDOM.render(title, document.getElementById('root'))
 1. useRef： 用来获取DOM元素
    - 只能用于函数组件或者自定义钩子
    - 钩子函数只能在函数组件中调用
+
+### Redux
+
+1. 引入Redux
+2. 创建reducer整合函数
+3. 通过reducer对象创建store
+4. 对store中的state进行订阅
+5. 通过dispatch派发state的操作指令
+
+        function reducer(state, action) {
+            <!-- 也可以指定默认值：state=1
+            一般来说state一般为一个对象: state ={} 例如：state={count: 1} -->
+            swith (action.type ) {
+                case 'ADD': 
+                    return state ++
+                case 'MINUTE'
+                    return state -- 
+                case 'ADD_N'
+                    return state + action.payload
+                default
+                    return state
+            }
+        }
+
+        const store = Redux.createStore(reducer, 1) // 这个1是state的默认值
+        
+        store.subscirbe(()=> {
+            // 这里写数据改变后要触发的逻辑
+            console.log(store.getState())
+        })
+
+        addBtn.addEventListener('click', ()=> {
+            store.dispatch({type: 'ADD'})
+        })
+
+        addBtn.addEventListener('click', ()=> {
+            store.dispatch({type: 'ADD_N', payload: 5})
+        })
+* redux提供了函数combineReducer来将多个reducer进行合并
+
+        const reducer = combineReducer({
+            a: aReducer,
+            b: bReducer
+        })
+
+        const store = Redux.createStore(reduce)
+
+#### Redux Toolkit(RTK)
+
+安装： 
+        yarn add react-redux @reduxjs/toolkit
+使用：
+        import { createSlice, configureStore } from '@reduxjs/toolkit'
+        //  创建reducer的切片
+        const stuSlice = createSlice({
+            name: 'stu', // 用来自动生成action的type
+            initialState: {
+                name: zhangsan,
+                age: 18,
+                gender: 男,
+                address: '西安'
+            }, // state的初始值
+            reducers: { // 指定state的操作，直接在对象中添加方法
+                setName(state, action) {
+                    // 可以通过不同的方法来指定state的不同操作
+                    // 两个参数：state 是传统state的一个代理对象 可以直接操作
+                    state.name = '李四'
+                },
+                setAge(state, action) {
+                    state.age = 20
+                }
+            }
+        })
+        // 切片会自动生成action
+        // actions中存储的是slice自动生成的action创建器（函数），调用函数后会自动创建action对象
+        // action对象的结构{type:name/函数名, payload:函数的参数}
+        const {setName, setAge } = stuSlice.actions
+
+        创建store，用来创建store对象，需要一个配置对象作为参数
+        
+        const store = configureStore({
+            <!-- reducer: stuSlice.reducer // 单个 -->
+            reducer: { // 多个
+                student: stuSlice.reducer
+            }
+        })
+        export default store
+         
+### react hooks (16.8版本以上)
+hooks 不用写class
+
+1. useState
+
+        function exmple() {
+            const [count, setCount] = useState(0)
+        }
+2. useEffect: 替代生命周期,数据改变时触发,
+
+        useEffect(()=> {
+            console.log('重新render')
+            return () => {
+                console.log('componentWillUnmount')
+            }
+        }, []) // 第二个参数指定了在那些值发生改变后触发componentWillUnmount。不写即表示组件销毁才触发
+3. useReducer
+
+        const [count, dispatch] = useReducer((state, action) => {
+            switch(action.type) {
+                case 'ADD':
+                    return state + 1
+                ...
+                default:
+                    return state
+            }
+        })
+
+        <button onClick={()=> dispatch({type: 'ADD'})}>increment</button>
+4. useContext(): 替代createContext中的consumer
+
+    之前我们用Consumer来获取Provider里的值：
+
+        <Consumer>
+            {data => <span>{ data }</span>}
+        </Comsumer>
+    
+    用useContext()为：
+
+        const { data }= useContext(value)
